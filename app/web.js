@@ -12,13 +12,8 @@ app.get('/', function(request, response) {
     response.render('index.html');
 });
 
-app.post('/post', function(request, response) {
-    var hash = request.body.hash;
-    if (!hash) {
-        console.log('No hash :(');
-        return;
-    }
-    console.log('Hash:' + hash);
+app.post('/pay', function(request, response) {
+    console.log(request.body);
     response.json({success: true});
 });
 
