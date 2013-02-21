@@ -1,5 +1,8 @@
 var express = require('express');
 var nunjucks = require('nunjucks');
+var redis = require('redis');
+var redisClient = redis.createClient();
+var HASH_KEY = 'dpalloveryourface';
 
 var app = express.createServer(express.logger());
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views/'));
@@ -13,7 +16,11 @@ app.get('/', function(request, response) {
 });
 
 app.post('/pay', function(request, response) {
-    console.log(request.body);
+    var purchase = request.body.data.object;
+    console.log(purchase.amount + ' requests: ' + purchase.description);
+    // key: hash of the domain.
+    // value: number of requests remaining.
+    redisClient.hset(HASH_KEY, purchase.description, purchase.amount, redis.print);
     response.json({success: true});
 });
 
