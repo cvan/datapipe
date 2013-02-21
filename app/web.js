@@ -7,6 +7,7 @@ var nunjucks = require('nunjucks');
 var redis = require('redis');
 
 var HASH_KEY = 'dpalloveryourface';
+var RATE_LIMIT = 10;  // Per minute
 var redisClient = redis.createClient();
 var stripe = require('stripe')('U0mCof3P0NpxdOQlTiYstKN6OF0B2gIp');
 
@@ -106,15 +107,22 @@ app.all('/url/', function(request, response) {
     var origin_host = url.parse(origin).hostname;
     console.log(origin_host);
     if (origin_host === 'localhost') {
-        // Just go ahead, it's fine.
-        process(5000, '*');
+        var ip_key = 'ip::' + request.ip;
+        redisClient.incr(ip_key, function(err, data) {
+            var ival = parseInt(data);
+            if (ival > RATE_LIMIT) {
+                return dp_error('Exceeded localhost quota. Try again in a minute.');
+            } else if (ival == 1) {
+                redisClient.expire(ip_key, 60, redis.print);
+            }
+            process(RATE_LIMIT - ival, '*');
+        });
     } else {
         redisClient.hincrby(HASH_KEY, origin_host, -1, function(err, val) {
             var ival = parseInt(val);
             if (ival < 0) {
                 redisClient.hincrby(HASH_KEY, origin_host, 1, redis.print);
-                dp_error('Exceeded quota for origin');
-                return;
+                return dp_error('Exceeded quota for origin');
             } else {
                 process(ival, origin);
             }
