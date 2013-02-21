@@ -162,6 +162,10 @@ input[type=number]:focus {
     outline: thin dotted \9;
 }
 
+input[type=text] {
+    text-align: center;
+}
+
 input[type=number] {
     width: 75px;
 }
