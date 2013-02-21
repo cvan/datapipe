@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>datapipe</title>
-  <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,700' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-<header>
-  <h1>Extensive Enterprises</h1>
-</header>
-<section id="dropzone">
-  <h2>Drop Files Here</h2>
-  <p>Drop your files here to send them to the crimson twins.</p>
-</section>
-<footer>
-  Made by <a href="http://mattbasta.com/">Matt Basta</a>
-</footer>
+    <head>
+        <title>datapipe</title>
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+        <header>
+            <h1 class="logo">datapipe</h1>
+        </header>
+        <section class="pay">
+            <form>
+                <label>
+                    <b>domain</b>
+                    <div><input type="text" name="domain" placeholder="http://omg.org"></div>
+                </label>
+                <label>
+                    <b>requests</b>
+                    <div><input type="number" name="requests" value="5"></div>
+                </label>
+                <button type="submit">pay</button>
+            </form>
+        </section>
+        <footer>
+            Made by <a href="http://github.com/cvan">cvan</a>, <a href="http://github.com/mattbasta">mattbasta</a>, <a href="http://github.com/potch">potch</a>
+        </footer>
 
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="/static/script.js"></script>
-
-</body>
+        <script type="text/javascript" src="//use.typekit.net/kwe1wqx.js"></script>
+        <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+        <script type="text/javascript" src="/static/script.js"></script>
+    </body>
 </html>

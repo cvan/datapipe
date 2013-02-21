@@ -1,7 +1,110 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
+ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i,
+center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption,
+tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section,
+summary, time, mark, audio, video {
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+
 body {
-    background: #ccc;
-    font: 14px 'Titillium Web';
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+caption, th, td {
+    font-weight: normal;
+    text-align: left;
+    vertical-align: middle;
+}
+
+q, blockquote {
+    quotes: none;
+}
+
+q:before, q:after,
+blockquote:before, blockquote:after {
+    content: "";
+    content: none;
+}
+
+a img {
+    border: none
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu,
+nav, section, summary {
+    display: block;
+}
+
+img {
+    width: 100%;
+}
+
+
+img::selection {
+    background: transparent;
+}
+
+img::-moz-selection {
+    background: transparent;
+}
+
+/*
+input, button {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+*/
+
+html, body {
+    height: 100%;
+}
+
+html {
+    background: #fff;
+}
+
+body {
+    -webkit-tap-highlight-color: rgba(255,0,0,.6);
+}
+
+/* >> The Magnificent CLEARFIX <<
+   Lifted from html5boilerplate.com
+   License is Public domain */
+.c:after { content: ""; display: block; height: 0; clear: both; visibility: hidden; }
+.c { display: inline-block; }
+* html .c { height: 1%; } /* Hides from IE-mac \*/
+.c { display: block; }
+
+* {
+    box-sizing: border-box;
+    word-wrap: break-word;
+}
+
+html, body {
+    background: #fff;
+    height: 100%;
+}
+
+body {
+    font: 14px "Open Sans", sans-serif;
     font-size: 14px;
+    padding: 2em;
 }
 
 a {
@@ -10,37 +113,23 @@ a {
 
 header {
     text-align: center;
-    text-transform: uppercase;
 }
 
-.uploaded {
-    background: #ddd;
-    border: 1px solid #666;
-    border-radius: 10px;
-    box-shadow: inset 0 0 10px #444;
-    color: #333;
-    margin: 2em 30%;
-    padding: 2em 1em;
+.logo {
+    color: #3a3;
+    font-family: "brandon-grotesque";
+    font-weight: 600;
+    font-size: 48px;
+}
+
+section {
+    padding: 2em 0 3em;
+}
+
+form {
+    margin: 0 auto;
     text-align: center;
-}
-
-#dropzone {
-    background: #aaa;
-    border: 1px solid #666;
-    border-radius: 10px;
-    box-shadow: inset 0 0 15px #444;
-    color: #333;
-    text-align: center;
-}
-
-#dropzone {
-    margin: 2em 20%;
-    padding: 4em 2em;
-}
-
-section#dropzone h2 {
-    text-transform: uppercase;
-    margin: 0;
+    width: 800px;
 }
 
 footer {
@@ -49,15 +138,75 @@ footer {
     text-align: center;
 }
 
-#dropzone.drag {
-    background: #888;
+input[type=text],
+input[type=number] {
+    .transition(~'.25s border, .5s box-shadow');
+    .box-shadow(-1px -1px 1px #eee inset, 1px 1px 1px #eee inset);
+    background: #fff;
+    border: 1px solid #aaa;
+    color: #666;
+    font: inherit;
+    font-size: 18px;
+    line-height: 20px;
+    margin: 0;
+    padding: 8px 10px;
 }
 
-@media(max-width:500px) {
+input[type=text]:focus,
+input[type=number]:focus {
+    .box-shadow(-1px -1px 1px #ddd inset, 1px 1px 1px #ddd inset);
+    background: lighten(#eee, 5%);
+    border-color: #777;
+    color: #000;
+    outline: 0;
+    outline: thin dotted \9;
+}
 
-    section#dropzone {
-        margin: 2em 5%;
-        padding: 4em 2em;
-    }
+input[type=number] {
+    width: 75px;
+}
 
+button {
+    border-radius: 3px;
+    box-shadow: 0 2px 0 0 rgba(0,0,0,.1), 0 -2px 0 0 rgba(0,0,0,.2) inset;
+    background: #47c182;
+    background-repeat: repeat-x;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font: inherit;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 40px;
+    height: 40px;
+    min-width: 100px;
+    padding: 0 20px;
+    -webkit-transition: box-shadow 0.25s linear;
+    transition: box-shadow 0.25s linear;
+    white-space: nowrap;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
+button:focus, button:hover {
+    box-shadow: 0 2px 0 0 rgba(0, 0, 0, .1), 0 -2px 0 0 rgba(0, 0, 0, .2) inset, 0 12px 24px 2px #30D889 inset;
+}
+
+button:active {
+    box-shadow: 0 2px 0 0 rgba(0, 0, 0, .2) inset, 0 12px 24px 6px rgba(0, 0, 0, .2) inset, 0 0 2px 2px rgba(0, 0, 0, .2) inset;
+}
+
+label {
+    display: block;
+    margin-bottom: 1.5em;
+}
+
+label b {
+    display: block;
+    font-size: 11px;
+    padding-bottom: .5em;
+    text-align: center;
+    text-transform: uppercase;
 }
