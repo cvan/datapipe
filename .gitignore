@@ -22,3 +22,4 @@ dist
 *.less.css
 settings_local.js
 node_modules
+npm-debug.log
