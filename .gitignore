@@ -21,3 +21,4 @@ dist
 .ipython
 *.less.css
 settings_local.js
+node_modules
