@@ -1,7 +1,7 @@
 datapipe
 ========
 
-Because GETting your data shouldn't be a pipedream.
+Because `GET`ting your data shouldn't be a pipedream.
 
 
 Installation
@@ -26,7 +26,7 @@ To play with redis:
 
 To keep an eye on the commands being sent to redis:
 
-     redis-cli monitor
+    redis-cli monitor
 
 To clear your redis database:
 
@@ -36,9 +36,14 @@ To clear your redis database:
 Deployment
 ==========
 
+To destroy the app on dotcloud:
+
+    dotcloud destroy
+
 To create the app on dotcloud (we need to do this only the first time):
 
-    dotcloud create datapipe
+    dotcloud create -f sandbox datapipe
+    dotcloud create -f live datapipe
 
 To connect to the dotcloud instance:
 
@@ -50,7 +55,7 @@ To push code to dotcloud:
 
 After the code has been updated it'll print out the URL, for example:
 
-     http://datapipe-hywnaqan.dotcloud.com
+    http://datapipe-hywnaqan.dotcloud.com
 
 To SSH into the dotcloud instance:
 
@@ -67,3 +72,7 @@ To view the redis connection info:
 Pushing code:
 
     dotcloud push && dotcloud run www
+
+To add the domain:
+
+    dotcloud domain add www datapi.pe
