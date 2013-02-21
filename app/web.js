@@ -10,7 +10,13 @@ var redis = require('redis');
 
 var RATE_LIMIT = 10;  // Per minute
 var HASH_KEY = 'dpkey';
-var redisClient = redis.createClient();
+
+if (settings.redis.auth) {
+    var redisClient = redis.createClient(settings.redis.port, settings.redis.host);
+    redisClient.auth(settings.redis.auth);
+} else {
+    var redisClient = redis.createClient();
+}
 
 var stripe = require('stripe')(settings.stripe.private);
 
