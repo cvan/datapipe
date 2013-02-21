@@ -1,3 +1,5 @@
+var settings = require('./settings_local.js');
+
 var http = require('http');
 var https = require('https');
 var url = require('url');
@@ -6,10 +8,11 @@ var express = require('express');
 var nunjucks = require('nunjucks');
 var redis = require('redis');
 
-var HASH_KEY = 'dpalloveryourface';
 var RATE_LIMIT = 10;  // Per minute
+var HASH_KEY = 'dpkey';
 var redisClient = redis.createClient();
-var stripe = require('stripe')('U0mCof3P0NpxdOQlTiYstKN6OF0B2gIp');
+
+var stripe = require('stripe')(settings.stripe.private);
 
 var app = express(express.logger());
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views/'));
@@ -20,18 +23,29 @@ app.use(express.bodyParser());
 
 app.get('/', function(request, response) {
     response.render('index.html', {
-        stripePK: 'pk_E6fG9Bxwgk7lVJPEkSPAKKiNh46Ow'
+        stripePK: settings.stripe.public
     });
 });
 
 app.post('/pay', function(request, response) {
     var purchase = request.body.data.object;
-    console.log(request.body);
-    console.log(purchase.amount + ' requests: ' + purchase.description);
-    // key: hash of the domain.
-    // value: number of requests remaining.
-    redisClient.hincrby(HASH_KEY, purchase.description, purchase.amount, redis.print);
-    response.json({success: true});
+
+    var purchaseRecord = redisClient.get('charge:'+purchase.id, function(err, data) {
+
+        if (err || !data) {
+            response.json({error: 'naughty naughty'});
+            return;
+        }
+
+        // [num_requests, 'domain.biz']
+        data = data.split('|');
+
+        redisClient.hincrby(HASH_KEY, data[1], data[0], redis.print);
+        console.log(data);
+        console.log('yay');
+        response.json({success: true});
+    });
+
 });
 
 app.all('/url/', function(request, response) {
@@ -130,6 +144,12 @@ app.all('/url/', function(request, response) {
     }
 });
 
+var prices = {
+    1000: 500,
+    10000: 2500,
+    100000: 7500
+};
+
 app.post('/charge', function(request, response) {
     var opts = {
         amount: 1000,
@@ -145,6 +165,7 @@ app.post('/charge', function(request, response) {
         } else {
             console.log('creating charge');
             console.log(charge);
+            redisClient.set('charge:'+charge.id, [1000,request.body.domain].join('|'));
             response.redirect('/');
         }
     });
