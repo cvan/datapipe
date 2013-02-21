@@ -12,7 +12,7 @@
             <form action="/charge" method="post">
                 <label>
                     <b>Domain</b>
-                    <div><input type="text" name="domain" placeholder="http://omg.org"></div>
+                    <div><input type="text" name="domain" required placeholder="http://omg.org"></div>
                 </label>
                 <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
                       data-key="{{ stripePK }}"></script>
@@ -24,5 +24,22 @@
 
         <script type="text/javascript" src="//use.typekit.net/kwe1wqx.js"></script>
         <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0rc1/zepto.min.js"></script>
+        <script type="text/javascript">
+            (function() {
+                $('form button').addClass('disabled');
+                function checkValid(form) {
+                    if (form) {
+                        $(form).find('button').toggleClass('disabled', !form.checkValidity());
+                    }
+                }
+                $(document).on('change keyup paste', 'input, select, textarea', function(e) {
+                    checkValid(e.target.form);
+                });
+                $('form').each(function() {
+                    checkValid(this);
+                });
+            })();
+        </script>
     </body>
 </html>

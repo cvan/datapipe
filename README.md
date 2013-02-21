@@ -20,6 +20,14 @@ Install redis and its launch agent (Mac OS X):
 Development
 ===========
 
+If you want to play with Stripe payments:
+
+    gem install localtunnel
+    localtunnel 8080
+
+Then go https://manage.stripe.com/account/webhooks and enter
+http://<something>.localtunnel.com/pay and then you can test that webhook.
+
 To play with redis:
 
     redis-cli
