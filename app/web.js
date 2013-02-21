@@ -106,11 +106,11 @@ app.all('/url/', function(request, response) {
                         return dp_error('Buffer too large');
                     }
                     buff.push(data);
-                })
+                });
 
                 pres.on('end', function() {
                     response.send(pres.statusCode, buff.join(''));
-                })
+                });
             }
         );
         proxy_req.on('error', function(e) {
@@ -129,7 +129,7 @@ app.all('/url/', function(request, response) {
     if (origin_host === 'localhost') {
         var ip_key = 'ip::' + request.ip;
         redisClient.incr(ip_key, function(err, data) {
-            var ival = parseInt(data);
+            var ival = +data;
             if (ival > RATE_LIMIT) {
                 return dp_error('Exceeded localhost quota. Try again in a minute.');
             } else if (ival == 1) {
@@ -139,7 +139,7 @@ app.all('/url/', function(request, response) {
         });
     } else {
         redisClient.hincrby(HASH_KEY, origin_host, -1, function(err, val) {
-            var ival = parseInt(val);
+            var ival = +val;
             if (ival < 0) {
                 redisClient.hincrby(HASH_KEY, origin_host, 1, redis.print);
                 return dp_error('Exceeded quota for origin');
@@ -162,7 +162,7 @@ app.post('/charge', function(request, response) {
         currency: "usd",
         card: request.body.stripeToken,
         description: request.body.domain
-    }
+    };
     stripe.charges.create(opts, function(err, charge) {
         if (err) {
             console.log(err);
