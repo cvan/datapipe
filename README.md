@@ -8,6 +8,7 @@ Installation
 ============
 
     cd app/
+    cp settings.js settings_local.js
     npm install
     pip install dotcloud
 
