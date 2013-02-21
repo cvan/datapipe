@@ -73,7 +73,7 @@ app.all('/url/', function(request, response) {
                 // Set our HTTP headers to the client request.
                 response.set({
                     'X-Data-Pipe-Remaining': remaining,
-                    'Access-Control-Allow-Origin:': origin  // CORS
+                    'Access-Control-Allow-Origin': origin  // CORS
                 });
 
                 pres.on('data', function(data) {
