@@ -132,6 +132,15 @@ footer {
     font-size: 80%;
 }
 
+footer:before,
+footer:after {
+    color: #c00;
+    content: "\00a0♥\00a0";
+    font-size: 8px;
+    position: relative;
+    top: -1px;
+}
+
 input[type=text],
 input[type=number] {
     .transition(~'.25s border, .5s box-shadow');
