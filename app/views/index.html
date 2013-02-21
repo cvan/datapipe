@@ -9,16 +9,13 @@
             <h1 class="logo">datapipe</h1>
         </header>
         <section class="pay">
-            <form>
+            <form action="/charge" method="post">
                 <label>
-                    <b>domain</b>
+                    <b>Domain</b>
                     <div><input type="text" name="domain" placeholder="http://omg.org"></div>
                 </label>
-                <label>
-                    <b>requests</b>
-                    <div><input type="number" name="requests" value="5"></div>
-                </label>
-                <button type="submit">pay</button>
+                <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
+                      data-key="{{ stripePK }}"></script>
             </form>
         </section>
         <footer>
@@ -27,6 +24,5 @@
 
         <script type="text/javascript" src="//use.typekit.net/kwe1wqx.js"></script>
         <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-        <script type="text/javascript" src="/static/script.js"></script>
     </body>
 </html>

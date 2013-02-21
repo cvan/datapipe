@@ -5,10 +5,10 @@ var url = require('url');
 var express = require('express');
 var nunjucks = require('nunjucks');
 var redis = require('redis');
-var stripe = require('stripe');
 
 var HASH_KEY = 'dpalloveryourface';
 var redisClient = redis.createClient();
+var stripe = require('stripe')('U0mCof3P0NpxdOQlTiYstKN6OF0B2gIp');
 
 var app = express(express.logger());
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views/'));
@@ -18,7 +18,9 @@ app.use('/static', express.static(__dirname + '/static'));
 app.use(express.bodyParser());
 
 app.get('/', function(request, response) {
-    response.render('index.html');
+    response.render('index.html', {
+        stripePK: 'pk_E6fG9Bxwgk7lVJPEkSPAKKiNh46Ow'
+    });
 });
 
 app.post('/pay', function(request, response) {
@@ -118,7 +120,26 @@ app.all('/url/', function(request, response) {
             }
         });
     }
+});
 
+app.post('/charge', function(request, response) {
+    var opts = {
+        amount: 1000,
+        currency: "usd",
+        card: request.body.stripeToken,
+        description: request.body.domain
+    }
+    stripe.charges.create(opts, function(err, charge) {
+        if (err) {
+            console.log(err);
+            response.json(err);
+            response.redirect('/');
+        } else {
+            console.log('creating charge');
+            console.log(charge);
+            response.redirect('/');
+        }
+    });
 });
 
 var port = 8080;
