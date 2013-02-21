@@ -27,10 +27,14 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0rc1/zepto.min.js"></script>
         <script type="text/javascript">
             (function() {
-                $('form button').addClass('disabled');
                 function checkValid(form) {
                     if (form) {
-                        $(form).find('button').toggleClass('disabled', !form.checkValidity());
+                        var button = $(form).find('button');
+                        if (form.checkValidity()) {
+                            button.removeClass('disabled').removeAttr('disabled');
+                        } else {
+                            button.addClass('disabled').attr('disabled', '');
+                        }
                     }
                 }
                 $(document).on('change keyup paste', 'input, select, textarea', function(e) {
