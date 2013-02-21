@@ -5,6 +5,7 @@ var url = require('url');
 var express = require('express');
 var nunjucks = require('nunjucks');
 var redis = require('redis');
+var stripe = require('stripe');
 
 var HASH_KEY = 'dpalloveryourface';
 var redisClient = redis.createClient();
@@ -22,6 +23,7 @@ app.get('/', function(request, response) {
 
 app.post('/pay', function(request, response) {
     var purchase = request.body.data.object;
+    console.log(request.body);
     console.log(purchase.amount + ' requests: ' + purchase.description);
     // key: hash of the domain.
     // value: number of requests remaining.
