@@ -1,10 +1,10 @@
 {
-  "name": "extensive-enterprises",
+  "name": "datapipe",
   "version": "0.1.0",
   "dependencies": {
     "express": "2.5.x",
-    "irc": "0.3.x",
-    "nunjucks": "0.1.x"
+    "nunjucks": "0.1.x",
+    "redis": "0.8.2"
   },
   "engines": {
     "node": "0.8.x",
