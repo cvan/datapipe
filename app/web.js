@@ -91,7 +91,7 @@ app.all('/url/', function(request, response) {
             }
         );
         proxy_req.on('error', function(e) {
-            return dp_error(e.message);
+            return dp_error('Req err: ' + e.message);
         });
         proxy_req.end();
     }
@@ -102,6 +102,7 @@ app.all('/url/', function(request, response) {
     }
 
     var origin_host = url.parse(origin).hostname;
+    console.log(origin_host);
     if (origin_host === 'localhost') {
         // Just go ahead, it's fine.
         process(5000, '*');
