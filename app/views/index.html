@@ -17,9 +17,27 @@
                 <script src="https://checkout.stripe.com/v2/checkout.js" class="stripe-button"
                       data-key="{{ stripePK }}"></script>
             </form>
+            <p><a href="javascript:" class="view-ajax-wrapper button">See jQuery/zepto <code>$.ajax</code> wrapper</a></p>
+            <!-- Workaround for https://github.com/madrobby/zepto/issues/499 -->
+            <pre class="ajax-wrapper"><code>// This modified $.ajax function lets you write
+//     $.get('https://github.com/')
+// instead of
+//     $.get('http://www.datapi.pe/url/?https://github.com/')
+
+$.ajaxSettings.url_ = 'http://www.datapi.pe/url/?';
+$.ajax_ = $.ajax;
+$.ajax = function(options) {
+    var settings = $.extend({}, options || {});
+    if (settings.url !== undefined &&
+        (settings.url.substr(0, 5) == 'http:' ||
+         settings.url.substr(0, 6) == 'https:')) {
+        settings.url = $.ajaxSettings.url_ + settings.url;
+    }
+    return $.ajax_(settings);
+};</code></pre>
         </section>
         <footer>
-            Made by <a href="http://github.com/cvan">cvan</a>, <a href="http://github.com/mattbasta">mattbasta</a>, <a href="http://github.com/potch">potch</a>
+            Made by <a href="https://github.com/cvan">cvan</a>, <a href="https://github.com/mattbasta">mattbasta</a>, <a href="https://github.com/potch">potch</a>
         </footer>
 
         <script type="text/javascript" src="//use.typekit.net/kwe1wqx.js"></script>
@@ -39,10 +57,24 @@
                 }
                 $(document).on('change keyup paste', 'input, select, textarea', function(e) {
                     checkValid(e.target.form);
+                }).on('click', '.view-ajax-wrapper', function() {
+                    $('.ajax-wrapper').toggle();
                 });
                 $('form').each(function() {
                     checkValid(this);
                 });
+
+                $.ajaxSettings.url_ = 'http://www.datapi.pe/url/?';
+                $.ajax_ = $.ajax;
+                $.ajax = function(options) {
+                    var settings = $.extend({}, options || {});
+                    if (settings.url !== undefined &&
+                        (settings.url.substr(0, 5) == 'http:' ||
+                         settings.url.substr(0, 6) == 'https:')) {
+                        settings.url = $.ajaxSettings.url_ + settings.url;
+                    }
+                    return $.ajax_(settings);
+                };
             })();
         </script>
     </body>
