@@ -7,7 +7,7 @@ Because `GET`ting your data shouldn't be a pipedream.
 Installation
 ============
 
-    cd app/
+    cd app
     cp settings.js settings_local.js
     npm install
     pip install dotcloud
@@ -20,6 +20,11 @@ Install redis and its launch agent (Mac OS X):
 
 Development
 ===========
+
+Run the node web server:
+
+    cd app
+    node web.js
 
 If you want to play with Stripe payments:
 
