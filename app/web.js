@@ -7,17 +7,14 @@ var url = require('url');
 var express = require('express');
 var nunjucks = require('nunjucks');
 var redis = require('redis');
+var stripe = require('stripe')(settings.stripe.private);
 
 var RATE_LIMIT = 10;  // Per minute
 
+var redisClient = redis.createClient(settings.redis.port || '', settings.redis.host || '');
 if (settings.redis.auth) {
-    var redisClient = redis.createClient(settings.redis.port, settings.redis.host);
     redisClient.auth(settings.redis.auth);
-} else {
-    var redisClient = redis.createClient();
 }
-
-var stripe = require('stripe')(settings.stripe.private);
 
 var app = express(express.logger());
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views/'));
@@ -32,10 +29,29 @@ app.get('/', function(request, response) {
     });
 });
 
+app.get('/credits', function(request, response) {
+    var qpos;
+    if ((qpos = request.url.indexOf('?')) === -1) {
+        return dp_error('URL not provided.');
+    }
+
+    var origin = request.url.substr(qpos + 1);
+    if (origin.substr(0, 5) == 'http:' || origin.substr(0, 6) == 'https:') {
+        origin = url.parse(origin).hostname;
+    }
+    console.log(origin);
+
+    redisClient.zscore('origins', origin, function(err, data) {
+        if (err) {
+            data = 0;
+        }
+        response.json({remaining: +data});
+    });
+});
+
 app.post('/pay', function(request, response) {
     var purchase = request.body.data.object;
-
-    var purchaseRecord = redisClient.get('charge:'+purchase.id, function(err, data) {
+    redisClient.get('charge:'+purchase.id, function(err, data) {
 
         if (err || !data) {
             response.json({error: 'naughty naughty'});
@@ -50,10 +66,9 @@ app.post('/pay', function(request, response) {
         console.log('yay');
         response.json({success: true});
     });
-
 });
 
-app.all('/url/', function(request, response) {
+app.all('/url', function(request, response) {
 
     function dp_error(error) {
         response.set('X-Data-Pipe-Error', 'True');
@@ -141,7 +156,7 @@ app.all('/url/', function(request, response) {
             var ival = +val;
             if (ival < 0) {
                 redisClient.zincrby('origins', 1, origin_host, redis.print);
-                return dp_error('Exceeded quota for origin');
+                return dp_error('Exceeded quota for origin.');
             } else {
                 process(ival, origin);
             }
@@ -158,7 +173,7 @@ var prices = {
 app.post('/charge', function(request, response) {
     var opts = {
         amount: 1000,
-        currency: "usd",
+        currency: 'usd',
         card: request.body.stripeToken,
         description: request.body.domain
     };
