@@ -9,7 +9,6 @@ var nunjucks = require('nunjucks');
 var redis = require('redis');
 
 var RATE_LIMIT = 10;  // Per minute
-var HASH_KEY = 'dpkey';
 
 if (settings.redis.auth) {
     var redisClient = redis.createClient(settings.redis.port, settings.redis.host);
@@ -46,7 +45,7 @@ app.post('/pay', function(request, response) {
         // [num_requests, 'domain.biz']
         data = data.split('|');
 
-        redisClient.hincrby(HASH_KEY, data[1], data[0], redis.print);
+        redisClient.zincrby('origins', data[0], data[1], redis.print);
         console.log(data);
         console.log('yay');
         response.json({success: true});
@@ -138,10 +137,10 @@ app.all('/url/', function(request, response) {
             process(RATE_LIMIT - ival, '*');
         });
     } else {
-        redisClient.hincrby(HASH_KEY, origin_host, -1, function(err, val) {
+        redisClient.zincrby('origins', -1, origin_host, function(err, val) {
             var ival = +val;
             if (ival < 0) {
-                redisClient.hincrby(HASH_KEY, origin_host, 1, redis.print);
+                redisClient.zincrby('origins', 1, origin_host, redis.print);
                 return dp_error('Exceeded quota for origin');
             } else {
                 process(ival, origin);
