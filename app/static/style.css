@@ -95,7 +95,6 @@ html {
 body {
     -webkit-tap-highlight-color: rgba(255,0,0,.6);
     font: 14px "Open Sans", sans-serif;
-    font-size: 14px;
     padding: 2em;
 }
 
@@ -113,9 +112,7 @@ a:hover {
 
 .logo {
     color: #3a3;
-    font-family: "brandon-grotesque";
-    font-weight: 600;
-    font-size: 48px;
+    font: 600 48px/1 "brandon-grotesque";
 }
 
 section {
@@ -124,7 +121,6 @@ section {
 
 form {
     margin: 0 auto;
-    width: 800px;
 }
 
 footer {
