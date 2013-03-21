@@ -16,6 +16,17 @@ if (settings.redis.auth) {
     redisClient.auth(settings.redis.auth);
 }
 
+function getDomain(origin) {
+    if (origin.substr(0, 5) == 'http:' ||
+        origin.substr(0, 6) == 'https:') {
+        origin = url.parse(origin).hostname;
+    }
+    if (origin.substr(0, 4) == 'www.') {
+        origin = origin.substr(4);
+    }
+    return origin;
+}
+
 var app = express(express.logger());
 var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views/'));
 env.express(app);
@@ -35,10 +46,7 @@ app.get('/credits', function(request, response) {
         return dp_error('URL not provided.');
     }
 
-    var origin = request.url.substr(qpos + 1);
-    if (origin.substr(0, 5) == 'http:' || origin.substr(0, 6) == 'https:') {
-        origin = url.parse(origin).hostname;
-    }
+    var origin = getDomain(request.url.substr(qpos + 1));
     console.log(origin);
 
     redisClient.zscore('origins', origin, function(err, data) {
@@ -61,7 +69,7 @@ app.post('/pay', function(request, response) {
         // [num_requests, 'domain.biz']
         data = data.split('|');
 
-        redisClient.zincrby('origins', data[0], data[1], redis.print);
+        redisClient.zincrby('origins', data[0], getDomain(data[1]), redis.print);
         console.log(data);
         console.log('yay');
         response.json({success: true});
@@ -138,7 +146,7 @@ app.all('/url', function(request, response) {
         return dp_error('No Origin header');
     }
 
-    var origin_host = url.parse(origin).hostname;
+    var origin_host = getDomain(url.parse(origin));
     console.log(origin_host);
     if (origin_host === 'localhost') {
         var ip_key = 'ip::' + request.ip;
@@ -185,7 +193,7 @@ app.post('/charge', function(request, response) {
         } else {
             console.log('creating charge');
             console.log(charge);
-            redisClient.set('charge:'+charge.id, [1000,request.body.domain].join('|'));
+            redisClient.set('charge:'+charge.id, [1000, getDomain(request.body.domain)].join('|'));
             response.redirect('/');
         }
     });
