@@ -146,7 +146,7 @@ app.all('/url', function(request, response) {
         return dp_error('No Origin header');
     }
 
-    var origin_host = getDomain(url.parse(origin));
+    var origin_host = getDomain(url.parse(origin).href);
     console.log(origin_host);
     if (origin_host === 'localhost') {
         var ip_key = 'ip::' + request.ip;
