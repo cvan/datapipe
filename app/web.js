@@ -9,6 +9,7 @@ var nunjucks = require('nunjucks');
 var redis = require('redis');
 var stripe = require('stripe')(settings.stripe.private);
 
+var DO_RATE_LIMIT = false;
 var RATE_LIMIT = 10;  // Per minute
 
 var redisClient = redis.createClient(settings.redis.port || '', settings.redis.host || '');
@@ -148,27 +149,29 @@ app.all('/url', function(request, response) {
 
     var origin_host = getDomain(url.parse(origin).href);
     console.log(origin_host);
-    if (origin_host === 'localhost') {
-        var ip_key = 'ip::' + request.ip;
-        redisClient.incr(ip_key, function(err, data) {
-            var ival = +data;
-            if (ival > RATE_LIMIT) {
-                return dp_error('Exceeded localhost quota. Try again in a minute.');
-            } else if (ival == 1) {
-                redisClient.expire(ip_key, 60, redis.print);
-            }
-            process(RATE_LIMIT - ival, '*');
-        });
-    } else {
-        redisClient.zincrby('origins', -1, origin_host, function(err, val) {
-            var ival = +val;
-            if (ival < 0) {
-                redisClient.zincrby('origins', 1, origin_host, redis.print);
-                return dp_error('Exceeded quota for origin.');
-            } else {
-                process(ival, origin);
-            }
-        });
+    if (DO_RATE_LIMIT) {
+        if (origin_host === 'localhost') {
+            var ip_key = 'ip::' + request.ip;
+            redisClient.incr(ip_key, function(err, data) {
+                var ival = +data;
+                if (ival > RATE_LIMIT) {
+                    return dp_error('Exceeded localhost quota. Try again in a minute.');
+                } else if (ival == 1) {
+                    redisClient.expire(ip_key, 60, redis.print);
+                }
+                process(RATE_LIMIT - ival, '*');
+            });
+        } else {
+            redisClient.zincrby('origins', -1, origin_host, function(err, val) {
+                var ival = +val;
+                if (ival < 0) {
+                    redisClient.zincrby('origins', 1, origin_host, redis.print);
+                    return dp_error('Exceeded quota for origin.');
+                } else {
+                    process(ival, origin);
+                }
+            });
+        }
     }
 });
 
